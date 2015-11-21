@@ -1,0 +1,9 @@
+/vendor
+*.php~
+*.docx
+dict.json
+dc.txt
+ref.txt
+ref.txt~
+*.css~
+*.js~

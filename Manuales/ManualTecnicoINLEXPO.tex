@@ -1,0 +1,296 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Thin Sectioned Essay
+% LaTeX Template
+% Version 1.0 (3/8/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original Author:
+% Nicolas Diaz (nsdiaz@uc.cl) with extensive modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt]{article} % Font size (can be 10pt, 11pt or 12pt) and paper size (remove a4paper for US letter paper)
+
+\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
+\usepackage{graphicx} % Required for including pictures
+\usepackage{wrapfig} % Allows in-line images
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Required for accented characters
+\usepackage{booktabs}
+\usepackage[spanish]{babel}
+\linespread{1.05} % Change line spacing here, Palatino benefits from a slight increase by default
+
+\makeatletter
+\renewcommand\@biblabel[1]{\textbf{#1.}} % Change the square brackets for each bibliography item from '[1]' to '1.'
+\renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
+
+\renewcommand{\maketitle}{ % Customize the title - do not edit title and author name here, see the TITLE block below
+\begin{flushright} % Right align
+{\LARGE\@title} % Increase the font size of the title
+
+\vspace{50pt} % Some vertical space between the title and author name
+
+{\large\@author} % Author name
+\\\@date % Date
+
+\vspace{40pt} % Some vertical space between the author block and abstract
+\end{flushright}
+}
+
+\title{\textbf{Manual Técnico de INLEXPO}} % Subtitle
+
+\author{\textsc{Ricardo E. Monge} % Author
+\\{\textit{Instituto de Investigaciones Lingüísticas}}} % Institution
+
+\date{\today} % Date
+
+\begin{document}
+
+\maketitle 
+El presente manual documenta y especifica los aspectos técnicos y de desarrollo que rigen el funcionamiento del sistema de manipulación de diccionarios que el Instituto de Lexicografía de la Facultad de Letras de la Universidad de Costa Rica utiliza para la creación, gestión y edición de sus obras lexicográficas.
+
+El documento está dividido en tres secciones, la primera trata sobre la organización de la base de datos, la segunda de la organización de los archivos del sistema y la tercera sobre las contraseñas y accesos para el personal desarrollador y técnico al sistema. %sobre la interfaz de usuario implementada en el sistema en línea disponible en \texttt{www.inlexpo.ucr.ac.cr}.
+
+\section*{Diseño y funcionamiento de la base de datos}
+El almacenamiento de información lexicográfica resulta ser todo un reto para los sistemas computacionales tradicionales, por  variedad de razones, pero entre las más importantes (y que fueron las que establecieron las bases para el diseño de la base de datos completamente nuevo) estàn:
+
+\begin{enumerate}
+\item Las entradas lexicográficas son estructuras jerárquicas ,muy variables. En un caso, una entrada puede tener una simple definición (acepción); pero en otro caso, puede haber ejemplos, referencias para varias acepciones y variantes de la entrada, cada una con sus acepciones, ejemplos y referencias. 
+\item El texto de las distintas secciones (ejemplos, acepciones, traducciones, etc.) puede variar mucho en longitud y puede tener materiales multimedia asociados (imágenes, grabaciones de audio de pronunciaciones, etc.).
+\item La plataforma requiere flexibilidad para colocar nuevos tipos de información, pues no será solamente para un solo tipo de material lexicográfico.
+\end{enumerate}
+
+La característica (1) indica que la base de datos debe poder almacenar información de una estructura jerárquica de una forma eficiente, tomando en cuenta de que la jerarquía resultante no es muy profunda (a lo más, son cuator o cinco niveles de jerarquía). Se implementa mediante una tabla en la base de datos con referencia al nodo \textit{padre} y se declaran distintos tipos de nodos (y según esos tipos, se interpreta el nivel en la jerarquía).
+
+La característica (2) indica que en el aspecto del contenido para cada \textit{nodo} de la jerarquía debe ser ampliable y flexible, con posibilidad de almacenar tanto texto (sin lìmite de longitud y formato) así como materiales binarios adjuntos. De la misma forma, si fuera necesario agregar nuevos tipos de contenido, debe ser una operación relativamente sencilla, para cumplir con la característica (3).  Se implementa mediante una tabla que enlaza los distintos contenidos a un elemento de la jerarquía.
+
+\subsection*{Tablas de la base de datos}
+El nombre y el propósito de cada una de las tablas de la base de datos se describe en el cuadro 1 y en los subsiguientes se describe el detalle de los campos de cada una y su propósito para el almacenamiento seguro de la información lexicográfica. 
+
+\begin{table}
+\centering
+\begin{tabular}{rp{8cm}} 
+\toprule 
+Nombre de la tabla &Propósito \\ \midrule 
+\texttt{content} & Guarda los datos particulares de acepciones, ejemplos y demás contenidos de una entrada lexicográfica\\
+\texttt{ content\_choice\_options} & Contiene las opciones para la selección de categorías gramaticales y marcas lingüísticas\\
+\texttt{ content\_types} & Contiene los distintos tipos de contenidos que pueden enlazarse a una entrada lexicográfica\\
+\texttt{crossref} & Almacena los datos de una referencia cruzada entre entradas lexicográfica \\
+\texttt{crossref\_type} & Contiene los distintos tipos de referencias cruzadas \\
+\texttt{dictionary} & Contiene los diccionarios y obras lexicográficas del sistema \\ 
+\texttt{ entry} & Almacena los datos propios de una entrada lexicográfica (sin importar su nivel jerárquico) \\
+\texttt{ entry\_type} & Contiene los detalles de los niveles jerárquicos de las entradas\\
+\texttt{ languages} & Permite la separación de material según el idioma, así como la especificación de referencias cruzadas para la traducción\\
+\texttt{ users} & Contiene la información de los usuarios que pueden autenticarse para realizar modificaciones a las entradas lexicográficas \\
+\bottomrule 
+\end{tabular}
+\caption{Tablas del sistema INLEXPO}
+\end{table}
+
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf id} &\texttt{int} & Identificador de contenido \\ 
+\texttt{entry\_id} &\texttt{int} &  ID de entrada asociada \\ 
+\texttt{lang} & \texttt{char(2)} & Referencia al idioma de este contenido\\ 
+\texttt{content\_type} & \texttt{int} & Tipo de contenido\\ 
+\texttt{source} & \texttt{varchar(150)} & Texto de la fuente  \\ 
+\texttt{content\_text} & \texttt{varchar(9000)} & Texto del contenido \\ 
+\texttt{content\_int} & \texttt{int} & Opción seleccionada del contenido\\ 
+\texttt{content\_attachment} & \texttt{varchar(200)} & Nombre del archivo adjunto asociado\\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{content}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{lang} & \texttt{char(2)} & Referencia al idioma del tipo de contenido\\ 
+\texttt{content\_type\_id} & \texttt{int} & Tipo de contenido \\ \texttt{content\_choice\_id} & \texttt{int} & Identificador de la opción \\
+\texttt{content\_value} & \texttt{varchar(100)} & Detalle de la opción \\ 
+\texttt{content\_value\_abbr} & \texttt{varchar(50)} & Abreviatura de la opción \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{content\_choice\_options}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf type\_id} &\texttt{int} & Identificador de tipo de contenido \\ 
+\texttt{lang} & \texttt{char(2)} & Referencia al idioma del tipo de contenido\\ 
+\texttt{label} & \texttt{varchar(40)} & Nombre del tipo de contenido \\ 
+\texttt{parent} & \texttt{int} & Si el contenido es jerárquico, se guarda el identificador del tipo de contenido \textit{padre} \\
+\texttt{required} & \texttt{bit} & Indica si el campo es opcional o no \\ 
+\texttt{control} & \texttt{int} & Tipo de visualización asociada. Ver cuadro 4. \\ 
+\texttt{max} & \texttt{int} & Indica si hay un màximo de contenidos para una entrada lexicográfica dada\\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{content\_types}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Valor & Propósito \\ \midrule 
+\texttt{1} & Un campo de texto de una línea, sin formato \\ 
+\texttt{2} & Casillas de selección única, una por opción \\ 
+\texttt{3} & Dos campos de texto de una línea, sin formato, para el contenido y la fuente \\ 
+\bottomrule 
+\end{tabular}
+\caption{Tipos de visualización para \texttt{control}}
+\end{table}
+
+Las tablas \texttt{content}, \texttt{content\_types} y \texttt{content\_choice\_options} colaboran juntas para obtener la flexibilidad necesaria para la colocación de material lexicográfico diverso. A manera de ejemplo, la definición y el ejemplo de una cierta acepción de una entrada lexicográfica tienen cada uno un registro en \texttt{content}, diferenciable mediante el \texttt{content\_type} (1 es para definiciones, 2 es para ejemplos). De la misma manera, para la asignación de las categorías gramaticales (\texttt{content\_type} es 5) y marcas lingüísticas (\texttt{content\_type} entre 10 y 16 ), pero los datos de las opciones permitidas (las categorías y marcas en sí) se obtienen de \texttt{content\_choice\_options}. Esto hace que el sistema sea sumamente flexible e independiente de las necesidades lexicográficas.
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{src} &\texttt{int} & Identificador de  entrada que origina la referencia cruzada \\ 
+\texttt{tgt} &\texttt{int} & Identificador de entrada que recibe la referencia cruzada \\ 
+\texttt{cross\_ref\_type} &\texttt{int} & Tipo de referencia cruzada \\ 
+\texttt{icon} &\texttt{varchar(10)} & Referencia al sìmbolo que debe utilizarse para representar la referencia cruzada \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{crossref}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf type\_id} &\texttt{int} & Identificador del tipo de referencia cruzada \\ 
+\texttt{type\_name} & \texttt{varchar(20)} & Nombre en pantalla del tipo de referencia cruzada \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{crossref\_type}}
+\end{table}
+
+En  la versión de INLEXPO desarrollada a lo largo del I Semestre del año 2015, no se utilizan las referencias cruzadas; pero la plataforma de base de datos está preparada para su incorporación en versiones posteriores. La idea es que relaciones como las equivalencias de traducción en otros idiomas, términos  asociados o similares se establezcan como referencias cruzadas entre entradas (o entre acepciones). 
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf id} &\texttt{int} & Identificador de diccionario \\ 
+\texttt{name} &\texttt{varchar(100)} &  Título del diccionario\\ 
+\texttt{author} & \texttt{varchar(20)} & Identificador del usuario propietario del diccionario\\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{dictionary}}
+\end{table}
+
+Por su naturaleza, la estructura de la tabla que almacena los diccionarios (ver cuadro 5) no hace referencia al idioma; pues las características de lengua corresponden a las entradas lexicográficas que se han ido creado y sus referencias cruzadas.
+
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf id} &\texttt{int} & Identificador de la entrada lexicográfica \\ 
+\texttt{d\_id} & \texttt{int} &Identificador del diccionario que contiene la entrada \\
+\texttt{lang} & \texttt{char(2)} & Referencia al idioma de la entrada\\ 
+\texttt{type} & \texttt{int} & Tipo de entrada y nivel jerárquico \\ 
+\texttt{head} & \texttt{varchar(50)} & Palabra(s) de la entrada lexicográfica \\ 
+\texttt{parent} & \texttt{int} & Si la entrada pertenece a otra,  se guarda el identificador de la entrada \textit{contenedora} \\
+\texttt{number} & \texttt{int} & Para acepciones, el número de acepción. \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{entry}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf type\_id} &\texttt{int} & Identificador del tipo de entrada \\ 
+\texttt{type\_name} & \texttt{varchar(20)} & Nombre del tipo de entrada \\ 
+\texttt{permitted\_children} & \texttt{varchar(60)} & Listado de tipos de entradas que pueden colocarse dentro de este tipo de entradas \\
+\texttt{permitted\_content} & \texttt{varchar(60)} & Listado de tipos de contenido que se pueden colocar en este tipo de entradas \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{entry\_type}}
+\end{table}
+
+Las tablas \texttt{entry} y \texttt{entry\_type} también forman una simbiosis que permite la creación de estructuras jerárquicas muy flexibles.  Por el momento, hay tres tipos de entradas (\textit{lema}, \textit{acepción}, \textit{sublema}) y pueden colocarse \textit{acepciones} dentro de \textit{lemas} y \textit{sublemas}, así como colocar  \textit{sublemas} dentro de los \textit{lemas}.  La especificación del tipo de entrada y el identificador de la entrada \textit{contenedora} se hace en registros de la tabla \texttt{entry}.
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf id} &\texttt{char(2)} & Identificador de idioma \\ 
+\texttt{name} &\texttt{varchar(50)} &  Nombre en pantalla del idioma \\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{languages}}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Columna & Tipo &Propósito \\ \midrule 
+\texttt{\bf login} &\texttt{varchar(20)} & \textit{Login} del usuario \\ 
+\texttt{name} &\texttt{varchar(100)} &  Nombre real del usuario\\ 
+\texttt{lastname} &\texttt{varchar(100)} &  Apellido del usuario \\ 
+\texttt{email} &\texttt{varchar(100)} &  Correo electrónico del usuario\\ 
+\texttt{level} &\texttt{int} &  Tipos de permisos.\\ 
+\texttt{password} &\texttt{varchar(100)} &  Contraseña, cifrada con \texttt{SHA1}\\ 
+\bottomrule 
+\end{tabular}
+\caption{Columnas de la tabla \texttt{users}}
+\end{table}
+
+\section*{Organización de archivos del sistema}
+El sistema INLEXPO desarrollado se compone de varios archivos con variedad de funciones y carpetas asociadas a componentes adicionales para la manipulación de archivos y recursos externos. El cuadro 13 documenta los archivos y carpetas y su propósito en el funcionamiento de INLEXPO, que están el el servidor en la carpeta \texttt{/var/www/inlexpo15/}.
+
+\begin{table}
+\centering
+\begin{tabular}{ccp{6cm}} 
+\toprule 
+Archivo & Tipo &Propósito \\ \midrule 
+\texttt{js/jquery-2.1.3.min.js} & Javascript & Librería necesaria para el funcionamiento de INLEXPO\\
+\texttt{vendor/phpoffice/*} & PHP & Librería para leer y escribir documentos de Word, para la funcionalidad de exportación de entradas \\
+\texttt{ajax.php} & PHP & Procesador de peticiones de visualización y actualización de la base de datos \\
+\texttt{export.doc.php} &PHP & Componente que produce la versión en Word del diccionario seleccionado\\
+\texttt{export.html.php} & PHP & Componente que produce una versión visible enel navegador (HTML) del diccionario seleccionado \\
+\texttt{inlexpo.png} & Imagen & Logotipo del proyecto INLEXPO\\
+\texttt{log.php} & PHP & Componente que procesa el inicio de sesión \\
+\texttt{style.css} &Hoja de estilos &  Hoja CSS que especifica el formato y colores de la página\\
+\texttt{ui.js} &Javascript & Contiene los comandos Javascript que permite la interacción del usuario con el sistema y la base de datos subyacente \\
+\bottomrule 
+\end{tabular}
+\caption{Detalle de archivos y carpetas de INLEXPO}
+\end{table}
+
+%\section*{Diseño de la interfaz del usuario final}
+
+
+\end{document}

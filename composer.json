@@ -1,0 +1,6 @@
+{
+    "require": {
+        "phpoffice/phpword": "^0.12.0",
+        "dompdf/dompdf": "^0.6.1"
+    }
+}

@@ -1,0 +1,270 @@
+* {margin:0;padding: 0; box-sizing: border-box;}
+
+/* Hiding default checkbox and Radio button design */
+
+input[type=checkbox],input[type=radio] {
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: 12;
+    width: 18px !important;
+    height: 18px !important;
+}
+input[type=checkbox]+.lbl,input[type=radio]+.lbl {
+    position: relative;
+    z-index: 11;
+    display: inline-block;
+    margin: 0;
+    line-height: 20px;
+    min-height: 14px;
+    min-width: 14px;
+    font-weight: normal;
+}
+input[type=checkbox]+.lbl.padding-8::before,input[type=radio]+.lbl.padding-8::before {
+    margin-right: 8px;
+}
+
+/* Basic Checkbox styles */
+input[type=checkbox]+.lbl::before,input[type=radio]+.lbl::before {
+  font-family: fontAwesome;
+  font-weight: normal;
+  font-size: 9px;
+  color: #123743;
+  content: "\a0";
+  background-color: #FAFAFA;
+  border: 1px solid #CCC;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 0;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  height: 13px;
+  line-height: 13px;
+  min-width: 13px;
+  margin-right: 1px;
+  margin-top: -5px;
+}
+
+/* Checked state styles */
+input[type=checkbox]:checked+.lbl::before,input[type=radio]:checked+.lbl::before {
+  display: inline-block;
+  content: '\f00c';
+  background-color: #F5F8FC;
+  border-color: #123743;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05),inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+}
+
+/* Hover state styles */
+input[type=checkbox]:hover+.lbl::before,input[type=radio]:hover+.lbl::before,input[type=checkbox]+.lbl:hover::before,input[type=radio]+.lbl:hover::before {
+  border-color: #123743;
+}
+
+/* Shadow when checked or Active */
+input[type=checkbox]:active+.lbl::before,input[type=radio]:active+.lbl::before,input[type=checkbox]:checked:active+.lbl::before,input[type=radio]:checked:active+.lbl::before {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled state styles */
+input[type=checkbox]:disabled+.lbl::before,input[type=radio]:disabled+.lbl::before,input[type=checkbox][disabled]+.lbl::before,input[type=radio][disabled]+.lbl::before,input[type=checkbox].disabled+.lbl::before,input[type=radio].disabled+.lbl::before {
+  background-color: #DDD !important;
+  border-color: #CCC !important;
+  box-shadow: none !important;
+  color: #BBB;
+}
+
+/* Styles for Radio button */
+input[type=radio]+.lbl::before {
+  border-radius: 32px;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 32px;
+}
+
+input[type=radio]:checked+.lbl::before {
+  content: "\2022";
+}
+ 
+/* Disable outline when clicked*/
+input[type=checkbox]:checked,input[type=radio]:checked,input[type=checkbox]:focus,input[type=radio]:focus {
+    outline: none !important;
+}
+
+#tabs {
+    background: #123743;
+    color:#2bad99;   
+    font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
+    height:104px;
+    position:relative;
+}
+#tabs img {position:absolute;left:5px;}
+#tabs form {position:absolute;right:5px;}
+#tabs form input{border:none;font-size: 80%; width: 100px;font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;  }
+#tabs form button {font-size:80%; padding:2px;padding-left:5px;padding-right:5px;font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
+    ;background-color:#2bad99;color:#123743;border:none;border-radius:3px;}
+#tabs ul { list-style-type: none;position: relative;top:64px;}
+#tabs li {height:40px;display:block;width:Auto; float:left;padding-left:10px;padding-right: 10px;padding-top: 9px; border-top-left-radius: 5px; border-top-right-radius: 5px;cursor: default;} 
+#tabs li.sel {background-color: #f3f3f3;color:#123743;}
+#tabs li:hover {color:#dfdfdf;}
+#tabs li.sel:hover {color:#2bad99;}
+#cmd {height:46px; background-color: #f3f3f3; border-bottom: solid 1px #dadada; font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
+     }
+#cmd div.bar { height: 40px;padding-top: 5px;padding-bottom: 5px; display: none;} 
+#cmd input {border:#d3d4d4 solid 1px; margin:5px;font-size: 11pt;padding:2px;}
+#cmd a {border-radius: 4px; text-decoration:none;color:black;padding: 5px; display: inline-block;
+  vertical-align: middle;
+ }
+.bold {font-weight:bold;}
+#cmd a:hover {background-color: #d3d4d4;color:black;}
+#z0 {width:95%;margin-left: auto;margin-right: auto;padding-top:10px;padding-bottom: 10px;}
+#e {float:left;width:49%;background:#ffffff;    font-family: 'Segoe UI',  'Liberation Sans','Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+#e h4 {font-size:11pt; margin-bottom:5px; }
+#e input {
+display: block;
+width: 90%;
+height: 34px;
+padding: 6px 12px;
+font-size: 14px;
+line-height: 1.42857143;
+color: rgb(85, 85, 85);
+background-color: rgb(255, 255, 255);
+background-image: none;
+border: 1px solid rgb(204, 204, 204);
+border-radius: 4px;
+-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+#e input:focus {
+border-color: rgb(102, 175, 233);
+outline: 0;
+-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075),0 0 8px rgba(102, 175, 233, .6);
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075),0 0 8px rgba(102, 175, 233, .6);
+}
+#p {
+    width:49%;float:left; padding:10px;
+   -webkit-box-shadow: 0px 0px 2px 3px rgba(0,0,0,0.45);
+
+-moz-box-shadow: 0px 0px 2px 3px rgba(0,0,0,0.45);
+
+box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.45);
+}
+
+.p00 {font-family:sans-serif;color:#18578c;font-size: 13pt;font-weight: bold;}
+.p01 {font-family: sans-serif;color:#5e3a1c;font-size: 10pt;font-weight: bold;}
+.p02 {color:#220a94;font-family: serif;font-style: italic;font-size: 11pt;}
+.p03{font-family: serif;font-size: 11pt;}
+.p04{color:#008080;font-family: serif;font-style: italic;font-weight: bold; font-size: 11pt;}
+ul.choose {width:40%;display:block;margin:10;}
+li.choose {display:block;width:250px;list-style-type:none;font-size: 10pt;}
+
+ul.menu {margin:0;}
+li.menu {list-style-type:none;}
+li.menu a {
+    display:block;
+    width:100%;
+    height:32px;
+    line-height:32px;
+    padding-left:16px;
+    text-decoration:none;
+    color:black;
+    background-color:white;
+    
+}
+li.menu a:hover {
+        background-color:#d3d4d4;
+}
+/*chooser, tal vez cambia */
+.choose li {margin:1px;}
+.choose li a {
+    color:black;
+    text-decoration:none;
+}
+.choose li > i {
+ position: relative;
+ border-radius: 14px; 
+ width: 20px;
+ height: 20px;
+ background-color: #f0f0f0;
+ border: 1px solid #bcbcbc;
+ box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+ margin: 0 1em 0 0;
+ display: inline-block;
+ vertical-align: middle;
+}
+.choose li > i.sel {
+  background: linear-gradient(#a0e5f8, #75c7dc);
+  background: -webkit-linear-gradient(#a0e5f8, #75c7dc);
+  border-color: #41a6bf;
+  box-shadow: 0px 1px 2px rgba(65, 166, 191, 0.9) inset;
+}
+.choose li > i.sel span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    border-radius: 5px;
+    border: none;
+    background: #167c95;
+    box-shadow: 0px 1px rgba(255, 255, 255, 0.3); 
+}
+/* side menu */ 
+#content {
+  display: block;
+  background: #fff;
+  padding: 0px 15px;
+  margin-left: 140px;
+  -webkit-box-shadow: 1px 2px 1px rgba(0,0,0,0.4);
+  -moz-box-shadow: 1px 2px 1px rgba(0,0,0,0.4);
+  box-shadow: 1px 2px 1px rgba(0,0,0,0.4);
+  min-height: 300px;
+}
+
+
+.contentblock {
+  display: block;
+  padding: 15px 20px;
+}
+
+.contentblock.hidden {
+  display: none;
+}
+
+/* side navigation */
+#sidemenu {
+  margin: 0;
+  padding: 0;
+  width: 140px;
+  float: left;
+  background: #e8e8e8;
+  border-right: 1px solid #c9c9c9;
+}
+
+
+#sidemenu li { display: block; text-align: center; border-top: 1px solid #fff; font-size:11pt;  }
+
+#sidemenu li a { 
+  display: block;
+  padding: 6px 2px;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 1px solid #d1d1d1;
+
+}
+#sidemenu li a:hover {
+  background: #f2f2f2;
+}
+
+#sidemenu li a strong { 
+  display: block;
+  margin-top: 5px;
+}
+
+#sidemenu li a.open {
+  width: 101%;
+  background: #fff;
+}
+
+
