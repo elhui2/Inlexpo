@@ -19,4 +19,4 @@ multilingues.
 * Ricardo Monge - Programador principal (2015) ([www.mogap.net](http://www.mogap.net)).
 * Mario Hernández - Asesoría lexicográfica.
 * Sergio Cordero Monge - Asesoría lexicográfica, diseño de la planta original.
-* Victor Sánchez - Director del ELEXHICÓS ([Programa de Estudios en Lexigografía](http://lexicografia.ucr.ac.cr/)), programa de investigación adscrito al [Instituto de Investigaciones Lingüísticas] (http://www.inil.ucr.ac.cr).
+* Victor Ml. Sánchez Corrales - Director del ELEXHICÓS ([Programa de Estudios en Lexigografía](http://lexicografia.ucr.ac.cr/)), programa de investigación adscrito al [Instituto de Investigaciones Lingüísticas] (http://www.inil.ucr.ac.cr).
