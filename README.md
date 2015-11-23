@@ -15,7 +15,8 @@ visualización y edición de diccionarios y materiales lexicográficos
 multilingues.
 
 ## Reconocimientos
-* Antonio Leoni - Creador de la idea ([Posgrado en Lingüística](http://linguistica.ucr.ac.cr/).
+* Antonio Leoni - Creador de la idea, Director del [Programa de Posgrado en Lingüística](http://linguistica.ucr.ac.cr/).
 * Ricardo Monge - Programador principal (2015) ([www.mogap.net](http://www.mogap.net)).
 * Mario Hernández - Asesoría lexicográfica.
-* Victor Sánchez - Propulsor del INIL ([Programa de Estudios en Lexigografía](http://lexicografia.ucr.ac.cr/)).
+* Sergio Cordero Monge - Asesoría lexicográfica, diseño de la planta original.
+* Victor Sánchez - Director del ELEXHICÓS ([Programa de Estudios en Lexigografía](http://lexicografia.ucr.ac.cr/)), programa de investigación adscrito al [Instituto de Investigaciones Lingüísticas] (http://www.inil.ucr.ac.cr).
