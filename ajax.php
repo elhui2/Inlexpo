@@ -119,7 +119,7 @@ function preview($mysqli,$l) {
     $result = $mysqli->query("SELECT * from entry where id=$l");
     $row=$result->fetch_assoc();
     $result->free();
-    $html="<div style='font-size:11pt;'><span style='font-weight:bold'>".$row['head']."</span>&nbsp;";
+    $html="<div style='font-size:11pt;'><span style='font-weight:bold'>".htmlentities($row['head'])."</span>&nbsp;";
     //enumerar la categoria, si tuviera
     /*$result = $mysqli->query("SELECT content_choice_options.content_value_abbr FROM content_choice_options INNER JOIN content ON  content_type_id = content_type AND content_choice_id = content_int WHERE entry_id =$l");
     $row=$result->fetch_array();
@@ -143,7 +143,7 @@ function preview($mysqli,$l) {
     //se recorren los sublemas y se muestran las acepciones de cada sublema
     $rt = $mysqli->query("SELECT * from entry where parent=$l and type=2");        
     while($row=$rt->fetch_assoc()) {
-        $html.="&nbsp;&#9632;&nbsp;<span style='font-weight:bold'>".$row['head']."</span>&nbsp;";
+        $html.="&nbsp;&#9632;&nbsp;<span style='font-weight:bold'>".htmlentities($row['head'])."</span>&nbsp;";
         $html.=_out_aceps($mysqli,$row['id'],1); 
     }
     
@@ -156,26 +156,26 @@ function preview($mysqli,$l) {
 $mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "********");
 $mysqli->set_charset("utf8");
 
-$m=$_GET['m']; // obtener el comando suministrado desde el cliente
+$m=$mysqli->real_escape_string($_GET['m']); // obtener el comando suministrado desde el cliente
 
 /** CCO - No utilizado - Junio 2015 **/
 if($m=="cco") {
-    $id=$_GET['id'];
-    $type=$_GET['type'];
-    $parentcci=$_GET['cci'];
+    $id=$mysqli->real_escape_string($_GET['id']);
+    $type=$mysqli->real_escape_string($_GET['type']);
+    $parentcci=$mysqli->real_escape_string($_GET['cci']);
     $result = $mysqli->query("SELECT * from content_choice_options where content_parent_value=$parentcci");        
     while($row=$result->fetch_assoc()) {
         $cci=$row['content_choice_id'];
         $cv=$row['content_value'];
         $ca=$row['content_value_abbr'];
-        echo "<li class='choose'><i><span></span></i><a href='javascript:choose(this,$id,$cci,\"$ca\",$type)'>$cv</a></li>"; 
+        echo "<li class='choose'><i><span></span></i><a href='javascript:choose(this,$id,$cci,\"$ca\",$type)'>".htmlentities($cv)."</a></li>";
     }
     //$row->free();
 }
 
 /** DN - Crear un diccionario **/
 if($m=="dn") {
-    $p1=$_GET['p1']; // PARAMETRO: Nombre del diccionario nuevo
+    $p1=$mysqli->real_escape_string($_GET['p1']); // PARAMETRO: Nombre del diccionario nuevo
     $mysqli->query("insert into dictionary(name) values ('$p1')");  
 }
 
@@ -194,40 +194,40 @@ if($m=="dl") {
     //$row->free();
 }
 
-/** EN - Crear una entrada (sea lema, sublema o acepciòn) **/
+/** EN - ç (sea lema, sublema o acepciòn) **/
 if($m=="en") {
-    $p1=$_GET['p1'];  // PARAMETRO: ID de Diccionario
-    $p2=$_GET['p2'];  // PARAMETRO: tèrmino del lema (headword)
-    $p3=$_GET['p3'];  // PARAMETRO: tipo (1=lema, 2=acepcion, 3=lema) 
-    $p4=$_GET['p4'];  // PARAMETRO: superior jeràrquico: (-1 si es lema, o el id del lema si es una acepciòn o sublema) 
+    $p1=$mysqli->real_escape_string($_GET['p1']);  // PARAMETRO: ID de Diccionario
+    $p2=$mysqli->real_escape_string($_GET['p2']);  // PARAMETRO: término del lema (headword)
+    $p3=$mysqli->real_escape_string($_GET['p3']);  // PARAMETRO: tipo (1=lema, 2=acepcion, 3=lema)
+    $p4=$mysqli->real_escape_string($_GET['p4']);  // PARAMETRO: superior jerárquico: (-1 si es lema, o el id del lema si es una acepción o sublema)
     $p5=-1;
     if(isset($_GET['p5'])) $p5=$_GET['p5'];
-    $ow=$_SESSION['a'];
+    $ow=$mysqli->real_escape_string($_SESSION['a']);
     $mysqli->query("insert into entry(d_id,lang,type,head,parent,number,owner) values ($p1,'es',$p3,'$p2',$p4,$p5,'$ow')");     
     echo $mysqli->insert_id; 
 }
 
 /** SE - Realizar la bùsqueda por lema **/ 
 if($m=="se"){
-    $p1=$_GET['p1'];  // PARAMETRO: tèrmino de bùsqueda
+    $p1=$mysqli->real_escape_string($_GET['p1']);  // PARAMETRO: tèrmino de bùsqueda
     $result = $mysqli->query("SELECT * from entry where head like '%$p1%' and parent=-1 order by head");        
     while($row=$result->fetch_assoc()) {
         $p1=$row['id'];
         $p2=$row['head'];
         $p3=$row['d_id'];
-        echo "<li class='menu'><a href='javascript:load_d_l($p3,$p1)'>$p2</a></li>"; 
+        echo "<li class='menu'><a href='javascript:load_d_l($p3,$p1)'>".htmlentities($p2)."</a></li>";
     }            
 }
 
 /** LL - Lista de todos los lemas para un diccionario particular **/
 if($m=="ll") {
-    $p1=$_GET['p1'];  // PARAMETRO: ID del diccionario 
+    $p1=$mysqli->real_escape_string($_GET['p1']);  // PARAMETRO: ID del diccionario
     $result = $mysqli->query("SELECT * from entry where d_id=$p1 and parent=-1 order by head");        
     while($row=$result->fetch_assoc()) {
         $p1=$row['id'];
         $p2=$row['head'];
         // el el cliente, se llama a load_l (..) para cargar el lema en pantalla 
-        echo "<li class='menu'><a href='javascript:load_l($p1)'>$p2</a></li>"; 
+        echo "<li class='menu'><a href='javascript:load_l($p1)'>".htmlentities($p2)."</a></li>";
     }
     //$row->free();
 }
@@ -238,7 +238,7 @@ if($m=="leld") {
     //cargar detalles de lema. cargar editor de datos generales de lema, no cargar acepcio alguna aun.
     // si c=-2, cargar lema anterior, si c=-1, cargar lema siguiente al actual. actual esta een $l, dic=$d
     //ver que tipo de entradas puedo crear en esta
-    //$n=$_GET['n'];
+    //$n=$mysqli->real_escape_string($_GET['n']);
     
     /* Primero, obtener el tipo de entradas que pueden crearse */
     $r1=$mysqli->query("select * from entry_type where type_id=1");
@@ -247,9 +247,9 @@ if($m=="leld") {
     /* y el tipo de contenido que puede colocarse */
     $pcc=explode(',',$rw1['permitted_content']);
     $r1->close();
-    $c=$_GET['c']; // PARAMETRO: ID de lema
-    $l=$_GET['l']; // PARAMETRO: NO UTILIZADO
-    $d=$_GET['d']; // PARAMETRO: ID de diccionario
+    $c=$mysqli->real_escape_string($_GET['c']); // PARAMETRO: ID de lema
+    $l=$mysqli->real_escape_string($_GET['l']); // PARAMETRO: NO UTILIZADO
+    $d=$mysqli->real_escape_string($_GET['d']); // PARAMETRO: ID de diccionario
     $OUT=array();
     if($c>0){
         $result = $mysqli->query("SELECT * from entry where id=$c");
@@ -282,7 +282,7 @@ if($m=="leld") {
             $tt=$row['id'];
             $num=$row['number'];
             $na=$row['head'];
-            $OUT['subl'].="<a href='javascript:load_s($tt,this)' id='su$tt'>$na</a>";
+            $OUT['subl'].="<a href='javascript:load_s($tt,this)' id='su$tt'>".htmlentities($na)."</a>";
             
         }
         //Barra de botones: coloco en 'acep' la lista de acepciones para este lema 
@@ -320,18 +320,18 @@ if($m=="leld") {
             $id=$row['type_id'];
             if(!in_array($id,$pcc)) continue;
             $lb=$row['label'];
-            $OUT['form'].= "<h4 id='h$id' data-lb='$lb'>$lb</h4><i></i>";
+            $OUT['form'].= "<h4 id='h$id' data-lb='$lb'>".htmlentities($lb)."</h4><i></i>";
             $l1="<ul class='choose'>";
             $r2 = $mysqli->query("SELECT * from content_choice_options where content_type_id=$id and content_parent_value=-1");
             while($rw1=$r2->fetch_assoc()) {
                 $cci=$rw1['content_choice_id'];
                 $cv=$rw1['content_value'];
                 $ca=$rw1['content_value_abbr'];
-                $l1.="<li class='choose'><i><span></span></i><a href='javascript:choose(this,$id,$cci,\"$ca\",0 )'>$cv</a></li>";      
+                $l1.="<li class='choose'><i><span></span></i><a href='javascript:choose(this,$id,$cci,\"$ca\",0 )'>".htmlentities($cv)."</a></li>";
 
             }
             $l1.="</ul><ul class='choose' id='s$id'></ul>";
-            $OUT['form'].= "<div id='f$id' class='mc'>$l1</div>";
+            $OUT['form'].= "<div id='f$id' class='mc'>".htmlentities($l1)."</div>";
         }
         if($logged && !$editable){
             /*  Si el usuario no puede editar el lema, mostramos un mensaje y desactivamos las demas "opciones"
@@ -357,9 +357,9 @@ if($m=="suld") {
     $pc=explode(',',$rw1['permitted_children']);
     $pcc=explode(',',$rw1['permitted_content']);
     $r1->close();
-    $c=$_GET['c']; // PARAMETRO: ID de sublema
-    $l=$_GET['l']; // PARAMETRO: NO UTILIZADO - Junio 2015
-    $d=$_GET['d']; // PARAMETRO: ID de diccionario
+    $c=$mysqli->real_escape_string($_GET['c']); // PARAMETRO: ID de sublema
+    $l=$mysqli->real_escape_string($_GET['l']); // PARAMETRO: NO UTILIZADO - Junio 2015
+    $d=$mysqli->real_escape_string($_GET['d']); // PARAMETRO: ID de diccionario
     $OUT=array();
     if($c>0){
         $result = $mysqli->query("SELECT * from entry where id=$c");
@@ -378,7 +378,7 @@ if($m=="suld") {
             $tt=$row['id'];
             $num=$row['number'];
             $ct++;
-            $OUT['acep'].="<a href='javascript:load_ac($tt,this)' id='ac$tt'>$num</a>";
+            $OUT['acep'].="<a href='javascript:load_ac($tt,this)' id='ac$tt'>".htmlentities($num)."</a>";
             
         }
                 $OUT['num']=$ct;
@@ -402,8 +402,8 @@ if($m=="acld") {
     $pc=explode(',',$rw1['permitted_children']);
     $pcc=explode(',',$rw1['permitted_content']);
     $r1->close();
-    $c=$_GET['e']; // PARAMETRO: ID de acepción
-    $l=$_GET['l']; // PARAMETRO: NO UTILIZADO - Junio 2015
+    $c=$mysqli->real_escape_string($_GET['e']); // PARAMETRO: ID de acepción
+    $l=$mysqli->real_escape_string($_GET['l']); // PARAMETRO: NO UTILIZADO - Junio 2015
     //$d=$_GET['d'];
     $OUT=array();
     if($c>0){        
@@ -441,8 +441,8 @@ if($m=="acld") {
                Si control=2, es una seleccion ùnica
                Si control=3, es un campo de fuente
              */
-            if($row['control']==1) $OUT['form'].= "<h4>$lb</h4><input type='text' id='t$id' onfocus='hidei(this)' $val><i></i><br/><br/>";
-            if($row['control']==3) $OUT['form'].= "<h4>$lb</h4><input type='text' id='t$id' onfocus='hidei(this)' $val><i></i><br/>&nbsp;&nbsp;Fuente:<input type='text' id='s$id'  onfocus='hidei(this)' $vals><i></i ><br/><br/>";
+            if($row['control']==1) $OUT['form'].= "<h4>".htmlentities($lb)."</h4><input type='text' id='t$id' onfocus='hidei(this)' $val><i></i><br/><br/>";
+            if($row['control']==3) $OUT['form'].= "<h4>".htmlentities($lb)."</h4><input type='text' id='t$id' onfocus='hidei(this)' $val><i></i><br/>&nbsp;&nbsp;Fuente:<input type='text' id='s$id'  onfocus='hidei(this)' $vals><i></i ><br/><br/>";
         }
         $result->close();
         
@@ -474,11 +474,11 @@ if($m=="acld") {
             $r1->free();
             $lb=$row['label'];
             /* se genera la vista de 'fichas' */
-            $html_tabs.="<li><a href='#h$id' $op onclick='changetab(event,this)'><strong>$lb</strong></a></li>";
+            $html_tabs.="<li><a href='#h$id' $op onclick='changetab(event,this)'><strong>".htmlentities($lb)."</strong></a></li>";
             $op="";
             $html_content.="<div id='h$id' class='contentblock $hi'>"; //<ul class='choose'>";
             $hi="hidden";
-            //$OUT['form'].= "<h4 id='h$id' data-lb='$lb'>$lb</h4><i></i>";
+            //$OUT['form'].= "<h4 id='h$id' data-lb='$lb'>".htmlentities($lb)."</h4><i></i>";
             //$l1="<ul class='choose'>";
             $r2 = $mysqli->query("SELECT * from content_choice_options where content_type_id=$id and content_parent_value=-1 and content_choice_visible=1 ");
             
@@ -487,7 +487,7 @@ if($m=="acld") {
                 $cci=$rw1['content_choice_id'];
                 $cv=$rw1['content_value'];
                 $ca=$rw1['content_value_abbr'];
-                //$html_content.="<li class='choose'><a href='javascript:choose(this,$id,$cci,\"$ca\",10 )'>$cv</a></li>";      
+                //$html_content.="<li class='choose'><a href='javascript:choose(this,$id,$cci,\"$ca\",10 )'>".htmlentities($cv)."</a></li>";
                $ch="";
                if($p11==$cci) $ch="checked='checked'";
                if($id==5) {
@@ -501,11 +501,11 @@ if($m=="acld") {
                          $ca3=$rw3['content_value_abbr'];
                            $chs="";
                            if($p11==$cci3) {$chs="checked='checked'";$disp="block";}
-                         $html_so.="<label style='display:block;'><input type='radio' value='$cci3' $chs id='r$cci3' onclick='choose(11,this,5)'  name='c5'><span class='lbl padding-8' >$cv3</span></label>";
+                         $html_so.="<label style='display:block;'><input type='radio' value='$cci3' $chs id='r$cci3' onclick='choose(11,this,5)'  name='c5'><span class='lbl padding-8' >".htmlentities($cv3)."</span></label>";
                          
                     }
                     if($html_so=="")  
-                         $html_content.="<label style='display:block;'><input type='radio' $ch value='$cci' id='r$cci' name='c$id' onclick='choose(11,this,$id)' ><span class='lbl padding-8'>$cv</span></label>";
+                         $html_content.="<label style='display:block;'><input type='radio' $ch value='$cci' id='r$cci' name='c$id' onclick='choose(11,this,$id)' ><span class='lbl padding-8'>".htmlentities($cv)."</span></label>";
                     else $html_content.="<a href='#' style='display:block' onclick='expand(\"so$cci\")'>$cv</a><div id='so$cci' style='display:$disp;'>$html_so</div>";
                 
                 
@@ -516,14 +516,14 @@ if($m=="acld") {
                        el comando choose() en cliente guarda el dato generado.
                     */
                    $html_content.="<label style='display:block;'><input type='radio' $ch value='$cci' id='r$cci' name='c$id' onclick='choose(11,this,$id)'>";
-                   $html_content.="<span class='lbl padding-8'>$cv</span></label>";
+                   $html_content.="<span class='lbl padding-8'>".htmlentities($cv)."</span></label>";
                }               
 
             }
             //$html_content.="</ul><ul class='choose' id='s$id'></div>";
             $html_content.="</div>";
             //$l1.="</ul><ul class='choose' id='s$id'></ul>";
-            //$OUT['form'].= "<div id='f$id' class='mc'>$l1</div>";
+            //$OUT['form'].= "<div id='f$id' class='mc'>".htmlentities($l1)."</div>";
             
         }   
         $html_tabs.="</ul>";
@@ -542,12 +542,12 @@ if($m=="acld") {
 if($m=="uc") {
     //update from chooser
     //{'m':'uc','c':'t'+id,'v':cci,'t':11,'e':l_id}    
-    //$id=$_GET['id'];    
-    $eid=$_GET['e'];
-    $lemma=$_GET['l'];
-    $v=$_GET['v'];
-    $t=$_GET['t'];
-    $c=substr($_GET['c'],1);        
+    //$id=$mysqli->real_escape_string($_GET['id']);
+    $eid=$mysqli->real_escape_string($_GET['e']);
+    $lemma=$mysqli->real_escape_string($_GET['l']);
+    $v=$mysqli->real_escape_string($_GET['v']);
+    $t=$mysqli->real_escape_string($_GET['t']);
+    $c=$mysqli->real_escape_string(substr($_GET['c'],1));
     if($t==11){
         $res=$mysqli->query("select * from content where entry_id=$eid and content_type=$c");
         $row=$res->fetch_assoc();
@@ -561,12 +561,12 @@ if($m=="uc") {
 /** U - Se llama desde el cliente para actualizar un valor de texto **/
 if($m=="u") {
    //update from text box. ajax.php',{'m':'u','id':id,'v':input.value,'t':type,'c':input.id} 10=head 12=content
-    $id=$_GET['id']; // PARAMETRO: ID de entrada (lema, sublema o acepcion)
-    $eid=$_GET['e']; // PARAMETRO: NO SE UTILIZA - Junio 2015
-    $aid=$_GET['a']; // PARAMETRO: ID de acepciòn    
+    $id=$mysqli->real_escape_string($_GET['id']); // PARAMETRO: ID de entrada (lema, sublema o acepción)
+    $eid=$mysqli->real_escape_string($_GET['e']); // PARAMETRO: NO SE UTILIZA - Junio 2015
+    $aid=$mysqli->real_escape_string($_GET['a']); // PARAMETRO: ID de acepción
     $v=$mysqli->real_escape_string($_GET['v']); // PARAMETRO: texto a colocar
-    $t=$_GET['t']; // PARAMETRO: tipo de actualizaciòn
-    $c=substr($_GET['c'],1); // PARAMETRO: nùmero de campo   
+    $t=$mysqli->real_escape_string($_GET['t']); // PARAMETRO: tipo de actualización
+    $c=$mysqli->real_escape_string(substr($_GET['c'],1)); // PARAMETRO: número de campo
     if($t==10) {
         /* Actualizamos el valor de HEAD (palabra del lema) para la entrada indicada */
         $mysqli->query("update entry set head='$v' where id=$id");        
@@ -595,11 +595,11 @@ if($m=="u") {
 
 /** UR - Actualiza desde casilla de selecciòn ùnica (categorìas y marcas ) **/
 if($m=="ur") {
-    $eid=$_GET['e']; // PARAMETRO: NO SE UTILIZA - Junio 2015
-    $aid=$_GET['a']; // PARAMETRO: ID de acepción
-    $v=($_GET['v']);// PARAMETRO:  valor a colocar 
-    $t=$_GET['t'];// PARAMETRO: NO SE UTILIZA - Junio 2015 
-    $c=($_GET['c']);// PARAMETRO: Número de campo 
+    $eid=$mysqli->real_escape_string($_GET['e']); // PARAMETRO: NO SE UTILIZA - Junio 2015
+    $aid=$mysqli->real_escape_string($_GET['a']); // PARAMETRO: ID de acepción
+    $v=$mysqli->real_escape_string($_GET['v']);// PARAMETRO: valor a colocar
+    $t=$mysqli->real_escape_string($_GET['t']);// PARAMETRO: NO SE UTILIZA - Junio 2015
+    $c=$mysqli->real_escape_string($_GET['c']);// PARAMETRO: Número de campo
     
     //intentamos actualizar
     $qu="update content set content_int=$v where entry_id=$aid and content_type=$c";
@@ -623,14 +623,14 @@ if($m=="ul" && $isadmin)
         if(strlen($p2)==0) {$p2="Sin nombre";}
         $p3=$row['lastname'];     
         if(strlen($p3)==0) {$p3="Sin apellido";}
-        echo "<li class='menu'><a href='javascript:editu(\"$p1\")'>$p2 $p3 (<i>$p1</i>)</a></li>"; 
+        echo "<li class='menu'><a href='javascript:editu(\"$p1\")'>".htmlentities($p2)." ".htmlentities($p3)." (<i>".htmlentities($p1)."</i>)</a></li>";
     }  
 }
 
 /** UE - Plantilla para editar los datos de un usuario **/
 if($m=="ue" && $isadmin)
 {
-    $login=$_GET['l']; // PARAMETRO: LOGIN del usuario a editar - Octubre 2015
+    $login=$mysqli->real_escape_string($_GET['l']); // PARAMETRO: LOGIN del usuario a editar - Octubre 2015
     
     //ver si existe. Si No, lo creamos.
     $result = $mysqli->query("SELECT count(*) from users where login='$login'"); 
@@ -654,7 +654,7 @@ if($m=="ue" && $isadmin)
         $s2=$p5=='2'?" selected='selected'":"";
         $s3=$p5=='3'?" selected='selected'":"";
         // Creamos un formulario para editar la información de los usuarios 
-        echo "<h3>Editando accesos para <span style='font-family:monospace'>$p1</span></h3>";
+        echo "<h3>Editando accesos para <span style='font-family:monospace'>".htmlentities($p1)."</span></h3>";
         echo "<h4>Nombre</h4><input type='text' id='t2' onfocus='hidei(this)' value='$p2' onblur='saveu(this,
 \"$p1\")'><i></i><br/><br/>";
         echo "<h4>Apellido</h4><input type='text' id='t3' onfocus='hidei(this)' value='$p3' onblur='saveu(this,\"$p1\")'><i></i><br/><br/>";
@@ -674,9 +674,9 @@ if($m=="ue" && $isadmin)
 /** US - Guarda un campo en la tabla usuarios. Sólo para administradores.  **/
 if($m=="us" && $isadmin)
 {
-    $login=$_GET['l']; // PARAMETRO: LOGIN del usuario a editar - Octubre 2015
+    $login=$mysqli->real_escape_string($_GET['l']); // PARAMETRO: LOGIN del usuario a editar - Octubre 2015
     $v=$mysqli->real_escape_string($_GET['v']); // PARAMETRO: valor del campo - Octubre 2015
-    $c=($_GET['c']); // PARAMETRO: campo a editar - Octubre 2015
+    $c=$mysqli->real_escape_string($_GET['c']); // PARAMETRO: campo a editar - Octubre 2015
     $field="";
     if($c=="t2") {$field="name"; $v="'$v'";}
     if($c=="t3") {$field="lastname"; $v="'$v'";}
@@ -691,8 +691,8 @@ if($m=="us" && $isadmin)
 /** COMANDO 8159. Utilizado por la rutina de importación para almacenar un cambio en la tabla temporal **/
 if($m=="8159" && $isadmin) 
 {
-    $i=intval(substr($_GET['i'],1));    
-    $t=intval($_GET['t']);
+    $i=intval(substr($mysqli->real_escape_string($_GET['i']),1));
+    $t=intval($mysqli->real_escape_string($_GET['t']));
     $mysqli->query("update import_temp set type=$t where id=$i");      
 }
 

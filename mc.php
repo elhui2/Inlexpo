@@ -32,7 +32,7 @@ $result = $mysqli->query("SELECT * from content_types where parent=-1 and contro
 while($row=$result->fetch_assoc()) {
     $id=$row['type_id'];
     $lb=$row['label'];
-    echo "<h2 id='h$id' data-lb='$lb'>$lb</h2>";
+    echo "<h2 id='h$id' data-lb='$lb'>".htmlentities($lb)."</h2>";
     $l1="<ul>";
     $r2 = $mysqli->query("SELECT * from content_choice_options where content_type_id=$id and content_parent_value=-1");
     while($rw1=$r2->fetch_assoc()) {
@@ -43,7 +43,7 @@ while($row=$result->fetch_assoc()) {
                
     }
     $l1.="</ul><ul id='s$id'></ul>";
-    echo "<div id='f$id' class='mc'>$l1</div>";
+    echo "<div id='f$id' class='mc'>".htmlentities($l1)."</div>";
 }
     ?>
 </body>

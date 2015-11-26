@@ -142,7 +142,7 @@ function spaces($s){
                 <a href="javascript:settw(8)" class="ft" id="ft8">OB</a>                
                 <a href="javascript:settw(9)" class="ft" id="ft9">(saltar)</a>
                 <a href="javascript:nextw(0)" class="ft" id="fid"></a>
-                <a href="save.php?w=<?php echo $_GET['w'];?>">Guardar</a>
+                <a href="save.php?w=<?php echo $mysqli->real_escape_string($_GET['w']);?>">Guardar</a>
             </div>
             </nav>
             <div id="z0">
@@ -164,7 +164,7 @@ function spaces($s){
                         $rs2->free();
                         $style="";
                         if($ro2!=false) { $style="font-weight:bold;"; $cd++;}
-                        echo "<a href='load.php?w=$i' style='$style'>$c. $w</a>";
+                        echo "<a href='load.php?w=" . htmlentities($i) . "' style='$style'>$c. " . htmlentities($w) . "</a>";
                         $c++;
                     }
                 }
@@ -176,7 +176,7 @@ function spaces($s){
                 if(isset($_GET['w'])) {
     // mostrar la entrada.
     $_marca=""; $_acep="";
-    $i=$_GET['w'];
+    $i=$mysqli->real_escape_string($_GET['w']);
     $NEXT1="";
     $NEXT="HEADWORD";
     $o="";
@@ -310,7 +310,7 @@ function spaces($s){
             if($CA[$i][2]{1}=="I") $style.="font-style:italic;";
             if($CA[$i][2]{2}=="S") $style.="font-variant: small-caps;";
             $l=strlen($CA[$i][0]);
-            $o.="<span class='e00' style='$style' id='f$i' data-type='$TYPE'>".spaces($CA[$i][0])."</span>";
+            $o.="<span class='e00' style='$style' id='f$i' data-type='$TYPE'>".htmlentities(spaces($CA[$i][0]))."</span>";
         }
         /* fin de mostrar */ 
         
@@ -327,6 +327,6 @@ function spaces($s){
                 <input type="text" size="30" value="Tengo un ~ de ingeniero"/>
                 <br><br> --> 
             </div>
-            <div id="p"><?php echo $t;?></div>
+            <div id="p"><?php echo htmlentities($t);?></div>
   </body>
 </html>
