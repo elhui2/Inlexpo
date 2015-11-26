@@ -1,0 +1,19 @@
+<?php
+/*
+    No agregar datos reales a config.php.sample
+
+    Copiar config.php.sample renombrado como config.php
+    y modificar config.php con datos reales
+*/
+
+
+// Configuración de la conexión a la base de datos
+
+$DB = [
+    'host' => 'localhost',
+    'user' => '',
+    'pass' => '',
+    'name' => '',
+    'port' => ini_get('mysqli.default_port'),
+    'sock' => ini_get('mysqli.default_socket'),
+];

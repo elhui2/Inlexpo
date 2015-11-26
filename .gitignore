@@ -7,3 +7,4 @@ ref.txt
 ref.txt~
 *.css~
 *.js~
+/config.php

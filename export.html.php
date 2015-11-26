@@ -1,3 +1,4 @@
+<?php require 'config.php'; ?>
 <!DOCTYPE html>
 <html>
     <head><meta charset="utf-8"/>
@@ -129,7 +130,7 @@ function preview($mysqli,$l) {
         
 }
 
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "inlexpo15");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 
     $p1=$_GET['id'];  //id de diccionario

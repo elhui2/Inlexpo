@@ -1,3 +1,4 @@
+<?php require 'config.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +27,8 @@ function choose(id,cci,cv) {
 </head>
 <body>
 <?php
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "inlexpo15");$mysqli->set_charset("utf8");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
+$mysqli->set_charset("utf8");
 //ver que tipo de entradas puedo crear en esta
 $n=$_GET['n'];
 $r1=$mysqli->query("select * from entry_type where type_id=$n");
