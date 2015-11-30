@@ -311,7 +311,7 @@ function spaces($s){
                         $style="";
                         if($ro2!=false) { $style="font-weight:bold;"; $cd++;}
                         else {
-                        echo "<a href='load.php?w=$i' style='$style'>$c. $w</a>";
+                        echo "<a href='load.php?w=" . htmlentities($i) . "' style='$style'>$c. " . htmlentities($w) . "</a>";
                         }
                         $c++;
                     }
@@ -324,7 +324,7 @@ function spaces($s){
                 if(isset($_GET['w'])) {
     // mostrar la entrada.
     $_marca=""; $_acep="";
-    $i=$_GET['w'];
+    $i=$mysqli->real_escape_string($_GET['w']);
     $NEXT1="";
     $NEXT="HEADWORD";
     $o="";
@@ -357,7 +357,7 @@ function spaces($s){
                 if($acepid==0) {
                     // crear la acepcion para este caso.
                     $ID++;
-                   $ow=$_SESSION['a'];
+                   $ow=$mysqli->real_escape_string($_SESSION['a']);
                    $p1=2;                    // id de diccionario 
                    $p2=''; 
                    $p3=3;  // PARAMETRO: tipo (1=lema, 3=acepcion, 2=lema)                
@@ -381,7 +381,7 @@ function spaces($s){
             }
             
             if($TYPE=="1") {
-               $ow=$_SESSION['a'];
+               $ow=$mysqli->real_escape_string($_SESSION['a']);
                $p1=2;                   
                $p2=$text;
                $p3=1;  // PARAMETRO: tipo (1=lema, 2=acepcion, 3=lema) 
@@ -415,7 +415,7 @@ function spaces($s){
              }
             if($TYPE=="3")
             {
-               $ow=$_SESSION['a'];
+               $ow=$mysqli->real_escape_string($_SESSION['a']);
                $p1=2;                   
                $p2=$text;
                $p3=2;  // PARAMETRO: tipo (1=lema, 2=acepcion, 3=lema) 
@@ -449,7 +449,7 @@ function spaces($s){
             }
             if($TYPE=="4") {$ID++; 
             
-               $ow=$_SESSION['a'];
+               $ow=$mysqli->real_escape_string($_SESSION['a']);
                $p1=2;                   
                $p2=$text;
                $p3=3;  // PARAMETRO: tipo (1=lema, 3=acepcion, 2=lema)                
@@ -515,7 +515,7 @@ function spaces($s){
 }                
 
 
-                echo $o;?>
+                echo htmlentities($o);?>
                 <!--Definición: <br>
                 <input type="text" size="30" value="certificado otorgado a persona"/>
                 <br><br>
@@ -523,6 +523,6 @@ function spaces($s){
                 <input type="text" size="30" value="Tengo un ~ de ingeniero"/>
                 <br><br> --> 
             </div>
-            <div id="p"><?php echo $t;?></div>
+            <div id="p"><?php echo htmlentities($t);?></div>
   </body>
 </html>

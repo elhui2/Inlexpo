@@ -133,7 +133,7 @@ function preview($mysqli,$l) {
 $mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 
-    $p1=$_GET['id'];  //id de diccionario
+    $p1=$mysqli->real_escape_string($_GET['id']);  //id de diccionario
     $result = $mysqli->query("SELECT id from entry where d_id=$p1 and parent=-1 order by head asc");        
     while($row=$result->fetch_assoc()) {
         echo preview($mysqli,$row['id']);
