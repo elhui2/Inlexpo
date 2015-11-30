@@ -1,7 +1,9 @@
 <?php
+require 'config.php';
+
 session_start();
 $logged=isset($_SESSION['a']);
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "******");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 
 function _out_aceps($mysqli,$l,$sublema)

@@ -1,4 +1,6 @@
 <?php
+require 'config.php';
+
 session_start();
 //$u=$_SESSION['a'];
 $logged=isset($_SESSION['a']);
@@ -153,7 +155,7 @@ function preview($mysqli,$l) {
 }
 
 /* inicializaciòn de base de datos */
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "********");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 
 $m=$_GET['m']; // obtener el comando suministrado desde el cliente

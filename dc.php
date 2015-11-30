@@ -1,4 +1,6 @@
 <?php
+require 'config.php';
+
 function print_r_level($data, $level = 5)
 {
     static $innerLevel = 1;
@@ -465,7 +467,7 @@ for($jj=847;$jj<853;$jj++)
 /* convert array into flat array */
 /* inicializaciòn de base de datos */
 
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "inlexpo15");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 
 for($jj=0;$jj<count($arrays);$jj++)

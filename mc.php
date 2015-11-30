@@ -1,3 +1,4 @@
+<?php require 'config.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +27,7 @@ function choose(id,cci,cv) {
 </head>
 <body>
 <?php
-$mysqli = new mysqli("localhost", "inlexpo", "inlexpo", "*****");
+$mysqli = new mysqli($DB['host'], $DB['user'], $DB['pass'], $DB['name'], $DB['port'], $DB['sock']);
 $mysqli->set_charset("utf8");
 $result = $mysqli->query("SELECT * from content_types where parent=-1 and control=2");
 while($row=$result->fetch_assoc()) {
